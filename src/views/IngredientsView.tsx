@@ -5,6 +5,8 @@ import { id } from "@instantdb/react";
 export default function IngredientsView() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterInflammation, setFilterInflammation] = useState<string>("all");
   const [formData, setFormData] = useState({
     name: "",
     unit: "",
@@ -99,6 +101,16 @@ export default function IngredientsView() {
 
   const ingredients = data?.ingredients || [];
 
+  // Filter ingredients based on search and filter criteria
+  const filteredIngredients = ingredients.filter((ingredient: any) => {
+    const matchesSearch = ingredient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         ingredient.tags?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesInflammation = filterInflammation === "all" || ingredient.inflammatory_level === filterInflammation;
+    
+    return matchesSearch && matchesInflammation;
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -114,29 +126,67 @@ export default function IngredientsView() {
         </button>
       </div>
 
+      {/* Search and Filter Bar */}
+      <div className="bg-white shadow-md rounded-lg p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+            <input
+              type="text"
+              placeholder="Search by name or tags..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Filter by Inflammation</label>
+            <select
+              value={filterInflammation}
+              onChange={(e) => setFilterInflammation(e.target.value)}
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
+            >
+              <option value="all">All Levels</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+        <div className="mt-2 text-sm text-gray-600">
+          Showing {filteredIngredients.length} of {ingredients.length} ingredients
+        </div>
+      </div>
+
       {/* Ingredients Table */}
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purines (mg)</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kcals</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inflammation</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
+        <div className="md:hidden px-4 py-2 bg-gray-50 text-xs text-gray-600">
+          👉 Scroll right to see all columns and actions
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purines (mg)</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kcals</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inflammation</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
+              </tr>
+            </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {ingredients.length === 0 ? (
+            {filteredIngredients.length === 0 ? (
               <tr>
                 <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
-                  No ingredients yet. Add your first ingredient to get started!
+                  {ingredients.length === 0 
+                    ? "No ingredients yet. Add your first ingredient to get started!"
+                    : "No ingredients match your search criteria."}
                 </td>
               </tr>
             ) : (
-              ingredients.map((ingredient: any) => (
+              filteredIngredients.map((ingredient: any) => (
                 <tr key={ingredient.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{ingredient.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{ingredient.unit}</td>
@@ -157,13 +207,13 @@ export default function IngredientsView() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                     <button 
                       onClick={() => handleEdit(ingredient)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-blue-600 hover:text-blue-900 font-medium"
                     >
                       Edit
                     </button>
                     <button 
                       onClick={() => handleDelete(ingredient.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 hover:text-red-900 font-medium"
                     >
                       Delete
                     </button>
@@ -173,6 +223,7 @@ export default function IngredientsView() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Add/Edit Ingredient Modal */}
