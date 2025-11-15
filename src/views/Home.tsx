@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Home() {
   return (
     <div className="space-y-8">
@@ -20,15 +22,15 @@ export default function Home() {
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
           <div className="mt-4 space-y-2">
-            <a href="/ingredients" className="block text-blue-600 hover:text-blue-800">
+            <Link to="/ingredients" className="block text-blue-600 hover:text-blue-800">
               → Manage Ingredients
-            </a>
-            <a href="/recipes" className="block text-blue-600 hover:text-blue-800">
+            </Link>
+            <Link to="/recipes" className="block text-blue-600 hover:text-blue-800">
               → Create Recipes
-            </a>
-            <a href="/calendar" className="block text-blue-600 hover:text-blue-800">
+            </Link>
+            <Link to="/calendar" className="block text-blue-600 hover:text-blue-800">
               → Plan This Week
-            </a>
+            </Link>
           </div>
         </div>
 
