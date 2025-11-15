@@ -29,23 +29,31 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 - [x] Repository cloned to `c:\Copython\codex\meal-planner`
 - [x] Development log created
 - [x] Initialize Vite + React + TypeScript project
-- [x] Configure TailwindCSS
+- [x] Configure TailwindCSS v4
 - [x] Setup Instantdb connection
 - [x] Create project folder structure
 - [x] Setup React Router with all main views
-- [ ] Configure GitHub Pages deployment
+- [x] Fix TailwindCSS PostCSS configuration error
+- [x] Configure GitHub Pages deployment
+- [x] Deploy to GitHub Pages
 
 #### Details:
 - **Vite Project**: Initialized with React 19.2.0 and TypeScript 5.9.3
-- **TailwindCSS**: Installed v3.x with PostCSS and Autoprefixer
+- **TailwindCSS**: Installed v4.1.17 with @tailwindcss/postcss plugin
 - **Instantdb**: Installed @instantdb/react and configured with database ID
-- **React Router**: v6 installed with route structure for all 7 main views
+- **React Router**: v7.9.6 installed with route structure for all 7 main views
+- **GitHub Pages**: Configured with base path `/meal-planner/` and deployed successfully
 - **Project Structure**:
   - `/src/components` - Reusable UI components
   - `/src/views` - Main page views
   - `/src/lib` - Database and schema configuration
   - `/src/types` - TypeScript type definitions
   - `/src/utils` - Helper functions (to be populated)
+
+#### Deployment:
+- **Live URL**: https://dyxsst.github.io/meal-planner/
+- **Deploy Command**: `npm run deploy`
+- **GitHub Repo**: https://github.com/dyxsst/meal-planner
 
 ---
 
@@ -85,7 +93,13 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 **Reason:** Provides better type safety and autocomplete in components, acts as documentation.  
 **Impact:** Improves developer experience without changing GDD design.
 
-*All implementations so far follow GDD v1.0 specifications exactly.*
+#### 5. TailwindCSS v4 Migration (November 15, 2025)
+**Decision:** Updated to TailwindCSS v4 with @tailwindcss/postcss plugin  
+**Reason:** TailwindCSS v4 changed PostCSS plugin architecture. The old `tailwindcss` PostCSS plugin is deprecated.  
+**Impact:** Fixed PostCSS build errors. Changed from `@tailwind` directives to `@import "tailwindcss"` in index.css.  
+**Action Taken:** Installed `@tailwindcss/postcss@latest` and updated `postcss.config.js` and `src/index.css`.
+
+*All implementations follow GDD v1.0 specifications exactly.*
 
 ---
 
@@ -93,8 +107,9 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 
 ### Development Server
 **Status:** ✅ Running successfully  
-**URL:** http://localhost:5173/  
-**Command:** `npm run dev`
+**Local URL:** http://localhost:5173/  
+**Production URL:** https://dyxsst.github.io/meal-planner/  
+**Command:** `npm run dev` (local) | `npm run deploy` (deploy to GitHub Pages)
 
 ### Data Models Status
 - [x] Ingredient schema (defined in instantdb.ts)
