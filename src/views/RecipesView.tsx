@@ -113,7 +113,7 @@ export default function RecipesView() {
           {filteredRecipes.map((recipe) => (
             <RecipeCard
               key={recipe.id}
-              recipe={recipe}
+              recipe={recipe as Recipe}
               onEdit={handleEditRecipe}
               onDelete={handleDeleteRecipe}
             />
