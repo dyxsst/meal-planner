@@ -6,11 +6,10 @@ export const schema = i.schema({
     // Ingredient entity
     ingredients: i.entity({
       name: i.string(),
-      unit: i.string(),
-      purines_mg_per_unit: i.number(),
-      kcals_per_unit: i.number(),
-      inflammatory_level: i.string(), // "low" | "medium" | "high"
-      tags: i.json(), // string[]
+      purinesPer100g: i.number(),
+      kcalsPer100g: i.number(),
+      inflammatoryLevel: i.number(), // 1-10 scale
+      tags: i.string().optional(), // comma-separated
       notes: i.string().optional(),
       createdAt: i.number(),
       updatedAt: i.number(),
@@ -19,12 +18,17 @@ export const schema = i.schema({
     // Recipe entity
     recipes: i.entity({
       name: i.string(),
-      type: i.string(), // "breakfast" | "lunch_dinner" | "snack"
-      ingredients: i.json(), // { ingredientId: string; amount_in_unit: number }[]
+      type: i.string().optional(), // "breakfast" | "lunch_dinner" | "snack"
+      servings: i.number(),
+      ingredients: i.json(), // { ingredientId: string; quantity: number }[]
       total_purines_mg: i.number(),
       total_kcals: i.number(),
-      inflammatory_level: i.string(), // "low" | "medium" | "high"
+      inflammatory_level: i.number(), // 1-10 scale
       safe_for_gout: i.boolean(),
+      tags: i.string().optional(), // comma-separated
+      notes: i.string().optional(),
+      createdAt: i.number(),
+      updatedAt: i.number(),
     }),
 
     // Pantry entity

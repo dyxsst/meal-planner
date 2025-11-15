@@ -9,10 +9,9 @@ export default function IngredientsView() {
   const [filterInflammation, setFilterInflammation] = useState<string>("all");
   const [formData, setFormData] = useState({
     name: "",
-    unit: "",
-    purines_mg_per_unit: 0,
-    kcals_per_unit: 0,
-    inflammatory_level: "low" as "low" | "medium" | "high",
+    purinesPer100g: 0,
+    kcalsPer100g: 0,
+    inflammatoryLevel: 5,
     tags: "",
     notes: "",
   });
@@ -24,18 +23,16 @@ export default function IngredientsView() {
     e.preventDefault();
     
     const now = Date.now();
-    const tagsArray = formData.tags.split(",").map(t => t.trim()).filter(t => t);
     
     if (editingId) {
       // Update existing ingredient
       db.transact(
         db.tx.ingredients[editingId].update({
           name: formData.name,
-          unit: formData.unit,
-          purines_mg_per_unit: formData.purines_mg_per_unit,
-          kcals_per_unit: formData.kcals_per_unit,
-          inflammatory_level: formData.inflammatory_level,
-          tags: tagsArray,
+          purinesPer100g: formData.purinesPer100g,
+          kcalsPer100g: formData.kcalsPer100g,
+          inflammatoryLevel: formData.inflammatoryLevel,
+          tags: formData.tags,
           notes: formData.notes,
           updatedAt: now,
         })
@@ -45,11 +42,10 @@ export default function IngredientsView() {
       db.transact(
         db.tx.ingredients[id()].update({
           name: formData.name,
-          unit: formData.unit,
-          purines_mg_per_unit: formData.purines_mg_per_unit,
-          kcals_per_unit: formData.kcals_per_unit,
-          inflammatory_level: formData.inflammatory_level,
-          tags: tagsArray,
+          purinesPer100g: formData.purinesPer100g,
+          kcalsPer100g: formData.kcalsPer100g,
+          inflammatoryLevel: formData.inflammatoryLevel,
+          tags: formData.tags,
           notes: formData.notes,
           createdAt: now,
           updatedAt: now,
@@ -60,10 +56,9 @@ export default function IngredientsView() {
     // Reset form and close modal
     setFormData({
       name: "",
-      unit: "",
-      purines_mg_per_unit: 0,
-      kcals_per_unit: 0,
-      inflammatory_level: "low",
+      purinesPer100g: 0,
+      kcalsPer100g: 0,
+      inflammatoryLevel: 5,
       tags: "",
       notes: "",
     });
@@ -74,11 +69,10 @@ export default function IngredientsView() {
   const handleEdit = (ingredient: any) => {
     setFormData({
       name: ingredient.name,
-      unit: ingredient.unit,
-      purines_mg_per_unit: ingredient.purines_mg_per_unit,
-      kcals_per_unit: ingredient.kcals_per_unit,
-      inflammatory_level: ingredient.inflammatory_level,
-      tags: ingredient.tags?.join(", ") || "",
+      purinesPer100g: ingredient.purinesPer100g,
+      kcalsPer100g: ingredient.kcalsPer100g,
+      inflammatoryLevel: ingredient.inflammatoryLevel,
+      tags: ingredient.tags || "",
       notes: ingredient.notes || "",
     });
     setEditingId(ingredient.id);
@@ -104,9 +98,16 @@ export default function IngredientsView() {
   // Filter ingredients based on search and filter criteria
   const filteredIngredients = ingredients.filter((ingredient: any) => {
     const matchesSearch = ingredient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         ingredient.tags?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+                         ingredient.tags?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesInflammation = filterInflammation === "all" || ingredient.inflammatory_level === filterInflammation;
+    let matchesInflammation = true;
+    if (filterInflammation === "low") {
+      matchesInflammation = ingredient.inflammatoryLevel <= 3;
+    } else if (filterInflammation === "medium") {
+      matchesInflammation = ingredient.inflammatoryLevel > 3 && ingredient.inflammatoryLevel <= 6;
+    } else if (filterInflammation === "high") {
+      matchesInflammation = ingredient.inflammatoryLevel > 6;
+    }
     
     return matchesSearch && matchesInflammation;
   });
@@ -168,9 +169,8 @@ export default function IngredientsView() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purines (mg)</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kcals</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purines/100g</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kcal/100g</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inflammation</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
@@ -179,30 +179,31 @@ export default function IngredientsView() {
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredIngredients.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
                   {ingredients.length === 0 
                     ? "No ingredients yet. Add your first ingredient to get started!"
                     : "No ingredients match your search criteria."}
                 </td>
               </tr>
             ) : (
-              filteredIngredients.map((ingredient: any) => (
+              filteredIngredients.map((ingredient: any) => {
+                const inflLevel = ingredient.inflammatoryLevel;
+                const inflColor = inflLevel <= 3 ? "bg-green-100 text-green-800" :
+                                  inflLevel <= 6 ? "bg-yellow-100 text-yellow-800" :
+                                  "bg-red-100 text-red-800";
+                
+                return (
                 <tr key={ingredient.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{ingredient.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{ingredient.unit}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{ingredient.purines_mg_per_unit}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{ingredient.kcals_per_unit}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{ingredient.purinesPer100g.toFixed(1)} mg</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{ingredient.kcalsPer100g.toFixed(0)} kcal</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      ingredient.inflammatory_level === "low" ? "bg-green-100 text-green-800" :
-                      ingredient.inflammatory_level === "medium" ? "bg-yellow-100 text-yellow-800" :
-                      "bg-red-100 text-red-800"
-                    }`}>
-                      {ingredient.inflammatory_level}
+                    <span className={`px-2 py-1 text-xs rounded-full ${inflColor}`}>
+                      {inflLevel}/10
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {ingredient.tags?.join(", ") || "-"}
+                    {ingredient.tags || "-"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                     <button 
@@ -219,7 +220,8 @@ export default function IngredientsView() {
                     </button>
                   </td>
                 </tr>
-              ))
+                );
+              })
             )}
           </tbody>
         </table>
@@ -246,51 +248,40 @@ export default function IngredientsView() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Unit *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g., 100g, 1 piece"
-                    value={formData.unit}
-                    onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Purines (mg) *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Purines (mg per 100g) *</label>
                   <input
                     type="number"
                     required
                     min="0"
                     step="0.1"
-                    value={formData.purines_mg_per_unit}
-                    onChange={(e) => setFormData({ ...formData, purines_mg_per_unit: parseFloat(e.target.value) })}
+                    value={formData.purinesPer100g}
+                    onChange={(e) => setFormData({ ...formData, purinesPer100g: parseFloat(e.target.value) })}
                     className="w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Calories *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Calories (kcal per 100g) *</label>
                   <input
                     type="number"
                     required
                     min="0"
                     step="0.1"
-                    value={formData.kcals_per_unit}
-                    onChange={(e) => setFormData({ ...formData, kcals_per_unit: parseFloat(e.target.value) })}
+                    value={formData.kcalsPer100g}
+                    onChange={(e) => setFormData({ ...formData, kcalsPer100g: parseFloat(e.target.value) })}
                     className="w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Inflammatory Level *</label>
-                  <select
-                    value={formData.inflammatory_level}
-                    onChange={(e) => setFormData({ ...formData, inflammatory_level: e.target.value as "low" | "medium" | "high" })}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Inflammatory Level (1-10) *</label>
+                  <input
+                    type="number"
+                    required
+                    min="1"
+                    max="10"
+                    value={formData.inflammatoryLevel}
+                    onChange={(e) => setFormData({ ...formData, inflammatoryLevel: parseInt(e.target.value) })}
                     className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                  </select>
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Tags (comma-separated)</label>
@@ -320,10 +311,9 @@ export default function IngredientsView() {
                     setEditingId(null);
                     setFormData({
                       name: "",
-                      unit: "",
-                      purines_mg_per_unit: 0,
-                      kcals_per_unit: 0,
-                      inflammatory_level: "low",
+                      purinesPer100g: 0,
+                      kcalsPer100g: 0,
+                      inflammatoryLevel: 5,
                       tags: "",
                       notes: "",
                     });

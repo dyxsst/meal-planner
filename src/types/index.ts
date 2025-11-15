@@ -3,11 +3,10 @@
 export interface Ingredient {
   id: string;
   name: string;
-  unit: string;
-  purines_mg_per_unit: number;
-  kcals_per_unit: number;
-  inflammatory_level: "low" | "medium" | "high";
-  tags: string[];
+  purinesPer100g: number;
+  kcalsPer100g: number;
+  inflammatoryLevel: number; // 1-10 scale
+  tags?: string; // comma-separated
   notes?: string;
   createdAt: number;
   updatedAt: number;
@@ -15,18 +14,23 @@ export interface Ingredient {
 
 export interface RecipeIngredient {
   ingredientId: string;
-  amount_in_unit: number;
+  quantity: number; // in grams
 }
 
 export interface Recipe {
   id: string;
   name: string;
-  type: "breakfast" | "lunch_dinner" | "snack";
+  type?: "breakfast" | "lunch_dinner" | "snack";
+  servings: number;
   ingredients: RecipeIngredient[];
   total_purines_mg: number;
   total_kcals: number;
-  inflammatory_level: "low" | "medium" | "high";
+  inflammatory_level: number; // 1-10 scale
   safe_for_gout: boolean;
+  tags?: string; // comma-separated
+  notes?: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface Pantry {
