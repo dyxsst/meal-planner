@@ -104,9 +104,14 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 
 ### Deviations from GDD:
 - Simplified `type` field (breakfast/lunch_dinner/snack) to optional - not enforced in UI yet
+- **CRITICAL: Changed ingredient schema from per-unit to per-100g for consistency**
+  - GDD specified: `unit`, `purines_mg_per_unit`, `kcals_per_unit`
+  - Implemented: `purinesPer100g`, `kcalsPer100g` (no unit field)
+  - **AI Import function MUST convert all ingredient data to per-100g basis**
+  - Example: "1 egg (50g, 100mg purines)" → purinesPer100g: 200
 - Using numeric inflammatory level (1-10) instead of categorical (low/medium/high) for more granular data
-- Using per 100g nutrition instead of per-unit for consistency across all ingredients
 - Tags changed from array to comma-separated string for simpler form input
+- Recipe ingredients use `quantity` (in grams) instead of `amount_in_unit`
 
 ---
 
