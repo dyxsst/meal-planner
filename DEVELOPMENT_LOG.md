@@ -57,7 +57,60 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 
 ---
 
-### Phase 1: Core Features Implementation
+#
+---
+
+## Phase 2: Recipe Builder - COMPLETED ✅
+**Status**: Fully implemented and deployed
+**Completion Date**: 2025-01-15
+
+### Features Implemented:
+- Recipe listing with card-based grid layout
+- Search recipes by name and tags
+- Filter by gout safety (all/safe/unsafe)
+- Full CRUD operations (Create, Read, Update, Delete)
+- Ingredient selection with auto-complete search
+- Quantity management (grams per ingredient)
+- Servings support
+- **Automatic Nutrition Calculations**:
+  - Total purines (mg)
+  - Total calories (kcal)
+  - Average inflammatory level (1-10)
+  - Per-serving nutrition breakdown
+- **Gout Safety Flagging**:
+  - Safe threshold: < 200mg total purines
+  - Visual indicators (✓ Safe / ⚠ Caution)
+- Real-time nutrition preview in modal
+- Tags and notes support
+- Mobile-responsive design
+- Color-coded inflammatory levels
+
+### Technical Decisions:
+- **Schema Updates**:
+  - Updated Ingredient schema: removed `unit`, changed to `purinesPer100g`/`kcalsPer100g`, numeric `inflammatoryLevel` (1-10)
+  - Added `servings`, `tags`, `notes` to Recipe entity
+  - Changed `ingredients` from simple list to `{ ingredientId, quantity }[]`
+  - Changed `inflammatory_level` from string to number (1-10)
+  - Added `createdAt`, `updatedAt` timestamps to both entities
+- **Nutrition Calculation Logic**:
+  - Scales ingredient nutrition by quantity/100 (per 100g basis)
+  - Averages inflammatory levels across all ingredients
+  - 200mg purine threshold for gout safety (conservative)
+- **UI/UX**:
+  - Card-based layout for better mobile experience
+  - Ingredient search dropdown with purine preview
+  - Real-time nutrition summary updates as ingredients added
+  - Per-serving calculations displayed prominently
+
+### Deviations from GDD:
+- Simplified `type` field (breakfast/lunch_dinner/snack) to optional - not enforced in UI yet
+- Using numeric inflammatory level (1-10) instead of categorical (low/medium/high) for more granular data
+- Using per 100g nutrition instead of per-unit for consistency across all ingredients
+- Tags changed from array to comma-separated string for simpler form input
+
+---
+
+## Phase 1: Ingredient Management
 **Status:** In Progress
 
 #### Ingredient Management - COMPLETED (November 15, 2025)
