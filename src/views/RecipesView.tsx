@@ -66,6 +66,24 @@ export default function RecipesView() {
     }
   };
 
+  const handleDuplicateRecipe = (recipe: Recipe) => {
+    const duplicatedRecipe = {
+      name: `${recipe.name} (Copy)`,
+      ingredients: recipe.ingredients,
+      total_purines_mg: recipe.total_purines_mg,
+      total_kcals: recipe.total_kcals,
+      inflammatory_level: recipe.inflammatory_level,
+      safe_for_gout: recipe.safe_for_gout,
+      servings: recipe.servings,
+      tags: recipe.tags,
+      notes: recipe.notes,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+
+    db.transact([db.tx.recipes[crypto.randomUUID()].update(duplicatedRecipe)]);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-8">
@@ -116,6 +134,7 @@ export default function RecipesView() {
               recipe={recipe as Recipe}
               onEdit={handleEditRecipe}
               onDelete={handleDeleteRecipe}
+              onDuplicate={handleDuplicateRecipe}
             />
           ))}
         </div>
@@ -138,9 +157,10 @@ interface RecipeCardProps {
   recipe: Recipe;
   onEdit: (recipe: Recipe) => void;
   onDelete: (id: string) => void;
+  onDuplicate: (recipe: Recipe) => void;
 }
 
-function RecipeCard({ recipe, onEdit, onDelete }: RecipeCardProps) {
+function RecipeCard({ recipe, onEdit, onDelete, onDuplicate }: RecipeCardProps) {
   const getInflammatoryColor = (level: number) => {
     if (level <= 3) return 'text-green-600 bg-green-50';
     if (level <= 6) return 'text-yellow-600 bg-yellow-50';
@@ -213,6 +233,12 @@ function RecipeCard({ recipe, onEdit, onDelete }: RecipeCardProps) {
           className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
         >
           Edit
+        </button>
+        <button
+          onClick={() => onDuplicate(recipe)}
+          className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm"
+        >
+          Duplicate
         </button>
         <button
           onClick={() => onDelete(recipe.id)}
