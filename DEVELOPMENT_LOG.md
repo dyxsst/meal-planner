@@ -62,13 +62,14 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 
 ## Phase 2: Recipe Builder - COMPLETED ✅
 **Status**: Fully implemented and deployed
-**Completion Date**: 2025-01-15
+**Completion Date**: November 15, 2025
 
 ### Features Implemented:
 - Recipe listing with card-based grid layout
 - Search recipes by name and tags
 - Filter by gout safety (all/safe/unsafe)
-- Full CRUD operations (Create, Read, Update, Delete)
+- Full CRUD operations (Create, Read, Update, Delete, **Duplicate**)
+- **Duplicate Recipe Feature**: One-click copy with "(Copy)" suffix
 - Ingredient selection with auto-complete search
 - Quantity management (grams per ingredient)
 - Servings support
@@ -115,10 +116,9 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 
 ---
 
-## Phase 1: Ingredient Management
-**Status:** In Progress
-
-#### Ingredient Management - COMPLETED (November 15, 2025)
+## Phase 1: Ingredient Management - COMPLETED ✅
+**Status:** Fully implemented and deployed
+**Completion Date:** November 15, 2025
 **Features Implemented:**
 - ✅ List all ingredients in sortable table
 - ✅ Add new ingredients with validation
@@ -146,20 +146,55 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 - Touch-friendly button sizing
 - Responsive layout adapts to screen size
 
-**Next Steps:**
-1. Add search/filter functionality to ingredient list
-2. Implement Recipe Builder with ingredient selection
-3. Build Weekly Calendar with meal planning
-4. Create Analytics Dashboard
-5. Build AI Import Center
+---
+
+## Phase 3: Weekly Calendar & Meal Planning
+**Status:** Not started
+
+**Features to Implement:**
+- Weekly calendar view with 7-day grid
+- Drag-and-drop meal assignment
+- Multi-person meal planning
+- Meal type categorization (breakfast/lunch/dinner/snack)
+- Nutrition aggregation per day/week
+- Gout safety tracking across meals
 
 ---
 
-### Phase 2: Recipe Management
-**Status:** Ready to start
+## Phase 4: Shopping List & Pantry
+**Status:** Not started
 
-**Next Steps:**
-1. Implement Recipe Management View with CRUD operations
+**Features to Implement:**
+- Auto-generated shopping list from meal plans
+- Pantry inventory management
+- Ingredient quantity tracking
+- Shopping list grouping by category
+- Check-off functionality
+
+---
+
+## Phase 5: Analytics Dashboard
+**Status:** Not started
+
+**Features to Implement:**
+- Weekly/monthly nutrition trends
+- Purine intake tracking with charts
+- Gout flare correlation analysis
+- Water intake tracking
+- Inflammatory level trends
+- Family member comparison views
+
+---
+
+## Phase 6: AI Import Center
+**Status:** Not started
+
+**Features to Implement:**
+- Prompt templates for ingredient/recipe import
+- LLM-powered data parsing
+- Batch ingredient/recipe creation
+- **CRITICAL**: Must convert all data to per-100g basis
+- Validation and preview before import
 
 ---
 
@@ -216,11 +251,11 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 ### Views Status
 - [x] Layout & Navigation (completed)
 - [x] Home Dashboard (placeholder completed)
-- [x] Ingredient Management View (COMPLETED - full CRUD)
-- [ ] Meal Builder View (placeholder created, needs implementation)
+- [x] Ingredient Management View (✅ COMPLETED - full CRUD with search/filter)
+- [x] Recipe Builder View (✅ COMPLETED - full CRUD with duplicate, nutrition calcs, gout safety)
+- [ ] Weekly Calendar View (placeholder created, needs implementation)
 - [ ] Pantry View (placeholder created, needs implementation)
 - [ ] Meal Suggestions View (to be integrated into Pantry)
-- [ ] Weekly Calendar View (placeholder created, needs implementation)
 - [ ] Shopping List View (placeholder created, needs implementation)
 - [ ] Analytics View (placeholder created, needs implementation)
 - [ ] AI Import Center (placeholder created, needs implementation)
@@ -233,13 +268,13 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 3. ✅ Setup Instantdb client with database ID
 4. ✅ Create basic project structure and routing
 5. ✅ Implement data models in Instantdb schema
-6. **CURRENT:** Implement Ingredient Management View with full CRUD
-7. Implement Recipe Builder with ingredient selection and calculations
-8. Build Weekly Calendar with meal planning for all family members
-9. Create Shopping List generator
-10. Build Analytics Dashboard with charts
-11. Implement AI Import Center with prompt templates
-12. Configure GitHub Pages deployment
+6. ✅ Implement Ingredient Management View with full CRUD
+7. ✅ Implement Recipe Builder with ingredient selection and calculations
+8. ✅ Configure GitHub Pages deployment
+9. **CURRENT:** Build Weekly Calendar with meal planning for all family members
+10. Create Shopping List generator
+11. Build Analytics Dashboard with charts
+12. Implement AI Import Center with prompt templates
 
 ---
 
