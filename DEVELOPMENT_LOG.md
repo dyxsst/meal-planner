@@ -147,7 +147,6 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 - Responsive layout adapts to screen size
 
 ---
-
 ## Phase 3: Weekly Calendar & Meal Planning - COMPLETED ✅
 **Status:** Fully implemented and deployed
 **Completion Date:** November 15, 2025
@@ -174,7 +173,11 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 
 ### Technical Implementation:
 - **Person Settings Integration:**
-  - Default thresholds: Exan (400mg purines), Nadia (2000 kcal)
+  - Auto-initializes Person records in database on first load
+  - UUID-based entity IDs for Instantdb compliance (`crypto.randomUUID()`)
+  - Person lookup by name (Exan, Nadia, Aidam)
+  - Default thresholds: Exan (400mg purines, 2200 kcal), Nadia (2000 kcal), Aidam (2800 kcal)
+  - Person records stored in Instantdb and visible in dashboard
   - Color coding: Green (<75% max), Orange (75-100% max), Red (>100% max)
   - Displays current/max values for transparency
 - **MealPlanEntry Schema:**
@@ -184,6 +187,13 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
   - Sums purines, calories per day
   - Averages inflammatory level across meals
   - Respects per-100g ingredient schema
+
+### Bug Fixes (Nov 15, 2025):
+- Fixed Instantdb UUID validation error
+  - Issue: Used string IDs like "exan", "nadia" - Instantdb requires UUIDs
+  - Solution: Generate proper UUIDs with `crypto.randomUUID()`
+  - Person lookup changed to match by `name` field instead of ID
+  - Deployed fix after local testing
 
 ### Recipe Builder Enhancement:
 - ✅ **Quick Add Ingredient** feature
