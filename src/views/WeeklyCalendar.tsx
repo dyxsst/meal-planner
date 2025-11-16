@@ -42,12 +42,58 @@ export default function WeeklyCalendar() {
   const mealPlanEntries = mealPlansData?.mealPlanEntries || [];
   const personsFromDB = personsData?.persons || [];
 
+  // Initialize person records if they don't exist
+  const initializePersons = () => {
+    const personsToCreate = [
+      {
+        id: 'exan',
+        name: 'Exan',
+        purineMinPerDay: 0,
+        purineMaxPerDay: 400,
+        kcalMinPerDay: 1800,
+        kcalMaxPerDay: 2200,
+        waterTargetMl: 2500,
+      },
+      {
+        id: 'nadia',
+        name: 'Nadia',
+        purineMinPerDay: 0,
+        purineMaxPerDay: 1000,
+        kcalMinPerDay: 1500,
+        kcalMaxPerDay: 2000,
+        waterTargetMl: 2000,
+      },
+      {
+        id: 'aidam',
+        name: 'Aidam',
+        purineMinPerDay: 0,
+        purineMaxPerDay: 1000,
+        kcalMinPerDay: 2000,
+        kcalMaxPerDay: 2800,
+        waterTargetMl: 2000,
+      },
+    ];
+
+    const transactions = personsToCreate
+      .filter((p) => !personsFromDB.find((existing) => existing.id === p.id))
+      .map((person) => db.tx.persons[person.id].update(person));
+
+    if (transactions.length > 0) {
+      db.transact(transactions);
+    }
+  };
+
+  // Auto-initialize persons on first load if none exist
+  if (personsFromDB.length === 0 && !personsLoading) {
+    initializePersons();
+  }
+
   // Get or create person settings with defaults
   const getPersonSettings = (personId: string) => {
     const existing = personsFromDB.find((p) => p.id === personId);
     if (existing) return existing;
 
-    // Default settings based on person
+    // Default settings based on person (fallback if DB not initialized yet)
     const defaults = {
       exan: {
         purineMinPerDay: 0,
