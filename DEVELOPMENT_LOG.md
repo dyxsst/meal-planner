@@ -204,15 +204,69 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 
 ---
 
-## Phase 4: Shopping List & Pantry
-**Status:** Not started
+## Phase 4: Shopping List & Pantry - COMPLETED ✅
+**Status:** Fully implemented and deployed
+**Completion Date:** November 15, 2025
 
-**Features to Implement:**
-- Auto-generated shopping list from meal plans
-- Pantry inventory management
-- Ingredient quantity tracking
-- Shopping list grouping by category
-- Check-off functionality
+### Features Implemented:
+
+#### Pantry Management:
+- ✅ **Multi-Pantry Support**
+  - Create multiple pantry scenarios (e.g., "Kitchen", "Summer Pantry")
+  - Active pantry selection with visual indicator
+  - Edit pantry names, delete pantries
+- ✅ **Inventory Tracking**
+  - Add ingredients with quantities (in grams)
+  - Inline quantity editing
+  - Remove ingredients from pantry
+  - Real-time ingredient search and selection
+- ✅ **Current Inventory Display**
+  - Table view with ingredient details
+  - Shows purines/100g, kcals/100g, tags
+  - Editable quantities
+  - Clean, organized UI
+
+#### Shopping List Generation:
+- ✅ **Smart Aggregation**
+  - Date range picker (default: current week)
+  - Aggregates all ingredients from meal plan entries in date range
+  - Converts per-100g nutrition to actual grams needed
+  - Sums identical ingredients across all meals
+- ✅ **Pantry Deduction**
+  - Automatically subtracts pantry quantities from needed amounts
+  - Shows only the delta (what you need to buy)
+  - Displays both "Needed" and "In Pantry" columns
+- ✅ **Interactive Features**
+  - Checkboxes to mark items as purchased (with visual feedback)
+  - Inline tag editing (updates on blur, not on every keystroke)
+  - Add custom ingredients to shopping list
+  - Create new ingredients directly from shopping view
+  - Group by category toggle (uses first tag as category)
+- ✅ **Print Support**
+  - Print-friendly view with CSS
+  - Hides buttons, shows only shopping list content
+
+#### Technical Implementation:
+- **Schema Changes:**
+  - Updated Pantry entity: `ingredients: { ingredientId, quantityGrams }[]` instead of `ingredientIds: string[]`
+  - Added `isActive` flag to mark current active pantry
+- **Calculation Logic:**
+  - Aggregates ingredients from all MealPlanEntries in date range
+  - Converts recipe quantities to grams
+  - Deducts pantry stock from required amounts
+  - Groups by first tag when enabled
+- **UX Enhancements:**
+  - Tag editing uses `onBlur` instead of `onChange` for better performance
+  - Mobile-responsive with `overflow-x-auto` tables
+  - Clean category grouping with collapsible sections
+
+### Files Created/Modified:
+- `src/lib/instantdb.ts` - Updated Pantry schema
+- `src/types/index.ts` - Added PantryIngredient interface
+- `src/views/PantryView.tsx` - Complete pantry management
+- `src/views/ShoppingListView.tsx` - Shopping list with aggregation and pantry deduction
+
+**Deployed:** Yes (https://dyxsst.github.io/meal-planner/)
 
 ---
 

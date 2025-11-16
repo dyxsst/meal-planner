@@ -33,10 +33,16 @@ export interface Recipe {
   updatedAt: number;
 }
 
+export interface PantryIngredient {
+  ingredientId: string;
+  quantityGrams: number;
+}
+
 export interface Pantry {
   id: string;
   name: string;
-  ingredientIds: string[];
+  ingredients: PantryIngredient[];
+  isActive?: boolean; // Mark the currently active pantry
 }
 
 export type MealSlot = 

@@ -34,7 +34,8 @@ export const schema = i.schema({
     // Pantry entity
     pantries: i.entity({
       name: i.string(),
-      ingredientIds: i.json(), // string[]
+      ingredients: i.json(), // { ingredientId: string; quantityGrams: number }[]
+      isActive: i.boolean().optional(), // Mark the currently active pantry
     }),
 
     // MealPlanEntry entity
