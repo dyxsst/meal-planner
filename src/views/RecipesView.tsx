@@ -278,6 +278,7 @@ function RecipeModal({ recipe, ingredients, onClose }: RecipeModalProps) {
   );
 
   const [searchIngredient, setSearchIngredient] = useState('');
+  const [showIngredientModal, setShowIngredientModal] = useState(false);
 
   // Calculate nutrition totals
   const calculateNutrition = () => {
@@ -469,30 +470,46 @@ function RecipeModal({ recipe, ingredients, onClose }: RecipeModalProps) {
               )}
 
               {/* Add Ingredient Search */}
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchIngredient}
-                  onChange={(e) => setSearchIngredient(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Search ingredients to add..."
-                />
-                {searchIngredient && filteredIngredients.length > 0 && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-y-auto">
-                    {filteredIngredients.slice(0, 10).map((ingredient) => (
-                      <button
-                        key={ingredient.id}
-                        type="button"
-                        onClick={() => handleAddIngredient(ingredient.id)}
-                        className="w-full px-3 py-2 text-left hover:bg-gray-100 flex justify-between items-center"
-                      >
-                        <span className="text-sm">{ingredient.name}</span>
-                        <span className="text-xs text-gray-500">
-                          {ingredient.purinesPer100g}mg purines
-                        </span>
-                      </button>
-                    ))}
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      value={searchIngredient}
+                      onChange={(e) => setSearchIngredient(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Search ingredients to add..."
+                    />
+                    {searchIngredient && filteredIngredients.length > 0 && (
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-y-auto">
+                        {filteredIngredients.slice(0, 10).map((ingredient) => (
+                          <button
+                            key={ingredient.id}
+                            type="button"
+                            onClick={() => handleAddIngredient(ingredient.id)}
+                            className="w-full px-3 py-2 text-left hover:bg-gray-100 flex justify-between items-center"
+                          >
+                            <span className="text-sm">{ingredient.name}</span>
+                            <span className="text-xs text-gray-500">
+                              {ingredient.purinesPer100g}mg purines
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowIngredientModal(true)}
+                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors whitespace-nowrap"
+                  >
+                    + New Ingredient
+                  </button>
+                </div>
+                {searchIngredient && filteredIngredients.length === 0 && (
+                  <p className="text-sm text-gray-500">
+                    No ingredients found. <button type="button" onClick={() => setShowIngredientModal(true)} className="text-blue-600 hover:underline">Create a new one?</button>
+                  </p>
                 )}
               </div>
             </div>
@@ -545,6 +562,160 @@ function RecipeModal({ recipe, ingredients, onClose }: RecipeModalProps) {
           </form>
         </div>
       </div>
+
+      {/* Quick Add Ingredient Modal */}
+      {showIngredientModal && (
+        <QuickAddIngredientModal
+          onClose={() => setShowIngredientModal(false)}
+          onIngredientAdded={(ingredientId) => {
+            handleAddIngredient(ingredientId);
+            setShowIngredientModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }
+
+// Quick Add Ingredient Modal Component
+interface QuickAddIngredientModalProps {
+  onClose: () => void;
+  onIngredientAdded: (ingredientId: string) => void;
+}
+
+function QuickAddIngredientModal({ onClose, onIngredientAdded }: QuickAddIngredientModalProps) {
+  const [formData, setFormData] = useState({
+    name: '',
+    purinesPer100g: 0,
+    kcalsPer100g: 0,
+    inflammatoryLevel: 5,
+    tags: '',
+    notes: '',
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.name.trim()) {
+      alert('Please enter an ingredient name');
+      return;
+    }
+
+    const ingredientId = crypto.randomUUID();
+
+    db.transact([
+      db.tx.ingredients[ingredientId].update({
+        name: formData.name.trim(),
+        purinesPer100g: formData.purinesPer100g,
+        kcalsPer100g: formData.kcalsPer100g,
+        inflammatoryLevel: formData.inflammatoryLevel,
+        tags: formData.tags.trim(),
+        notes: formData.notes.trim(),
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      }),
+    ]);
+
+    onIngredientAdded(ingredientId);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-[60]">
+      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <h3 className="text-xl font-bold mb-4">Quick Add Ingredient</h3>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Name *</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., Chicken Breast"
+                autoFocus
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Purines per 100g (mg) *</label>
+              <input
+                type="number"
+                min="0"
+                step="0.1"
+                value={formData.purinesPer100g}
+                onChange={(e) => setFormData({ ...formData, purinesPer100g: parseFloat(e.target.value) || 0 })}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Calories per 100g (kcal) *</label>
+              <input
+                type="number"
+                min="0"
+                step="0.1"
+                value={formData.kcalsPer100g}
+                onChange={(e) => setFormData({ ...formData, kcalsPer100g: parseFloat(e.target.value) || 0 })}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Inflammatory Level (1-10) *</label>
+              <input
+                type="number"
+                min="1"
+                max="10"
+                value={formData.inflammatoryLevel}
+                onChange={(e) => setFormData({ ...formData, inflammatoryLevel: parseInt(e.target.value) || 5 })}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-xs text-gray-500 mt-1">1 = anti-inflammatory, 10 = highly inflammatory</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Tags (comma-separated)</label>
+              <input
+                type="text"
+                value={formData.tags}
+                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., protein, poultry"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Notes</label>
+              <textarea
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={2}
+                placeholder="Optional notes..."
+              />
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="submit"
+                className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+              >
+                Add & Use Ingredient
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+

@@ -4,7 +4,7 @@ import Home from './views/Home';
 import IngredientsView from './views/IngredientsView';
 import RecipesView from './views/RecipesView';
 import PantryView from './views/PantryView';
-import CalendarView from './views/CalendarView';
+import WeeklyCalendar from './views/WeeklyCalendar';
 import ShoppingListView from './views/ShoppingListView';
 import AnalyticsView from './views/AnalyticsView';
 import AIImportView from './views/AIImportView';
@@ -18,7 +18,7 @@ function App() {
           <Route path="ingredients" element={<IngredientsView />} />
           <Route path="recipes" element={<RecipesView />} />
           <Route path="pantry" element={<PantryView />} />
-          <Route path="calendar" element={<CalendarView />} />
+          <Route path="calendar" element={<WeeklyCalendar />} />
           <Route path="shopping" element={<ShoppingListView />} />
           <Route path="analytics" element={<AnalyticsView />} />
           <Route path="ai-import" element={<AIImportView />} />

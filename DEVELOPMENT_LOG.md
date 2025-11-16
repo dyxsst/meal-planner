@@ -148,16 +148,49 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 
 ---
 
-## Phase 3: Weekly Calendar & Meal Planning
-**Status:** Not started
+## Phase 3: Weekly Calendar & Meal Planning - COMPLETED ✅
+**Status:** Fully implemented and deployed
+**Completion Date:** November 15, 2025
 
-**Features to Implement:**
-- Weekly calendar view with 7-day grid
-- Drag-and-drop meal assignment
-- Multi-person meal planning
-- Meal type categorization (breakfast/lunch/dinner/snack)
-- Nutrition aggregation per day/week
-- Gout safety tracking across meals
+### Features Implemented:
+- ✅ Weekly calendar view with 7-day grid (Mon-Sun)
+- ✅ Multi-person meal planning (Exan, Nadia, Aidam)
+- ✅ Week navigation (Previous/Next/Today buttons)
+- ✅ Meal slot system:
+  - 4 standard slots per person: Breakfast, Lunch, Dinner, Snack
+  - **Aidam special**: 2 extra school slots (Mon-Fri only)
+- ✅ Click-to-assign meal picker modal with search/filter
+- ✅ Real-time nutrition calculations per meal
+- ✅ **Daily Totals Display:**
+  - **Exan (Dad)**: Purines (with color-coded warnings), Calories, Avg Inflammatory
+  - **Nadia (Mom)**: Calories (with color-coded warnings), Avg Inflammatory
+  - **Aidam (Son)**: No daily totals (not needed)
+- ✅ **Gout Safety System:**
+  - Warning dialog when assigning high-purine meals to Exan
+  - Visual indicators on unsafe meals in calendar
+  - Confirmation required before assignment
+- ✅ Change/Remove meal buttons on hover
+- ✅ Configurable thresholds from Person settings (purineMaxPerDay, kcalMaxPerDay)
+
+### Technical Implementation:
+- **Person Settings Integration:**
+  - Default thresholds: Exan (400mg purines), Nadia (2000 kcal)
+  - Color coding: Green (<75% max), Orange (75-100% max), Red (>100% max)
+  - Displays current/max values for transparency
+- **MealPlanEntry Schema:**
+  - personId, date (YYYY-MM-DD), slot, recipeId
+  - Slots: breakfast, lunch, dinner, snack, school_extra1, school_extra2
+- **Nutrition Aggregation:**
+  - Sums purines, calories per day
+  - Averages inflammatory level across meals
+  - Respects per-100g ingredient schema
+
+### Recipe Builder Enhancement:
+- ✅ **Quick Add Ingredient** feature
+  - "+ New Ingredient" button in recipe modal
+  - Create ingredients without leaving recipe view
+  - Auto-adds newly created ingredient to current recipe
+  - Full ingredient form (purines, kcals, inflammatory, tags, notes)
 
 ---
 
@@ -252,8 +285,8 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 - [x] Layout & Navigation (completed)
 - [x] Home Dashboard (placeholder completed)
 - [x] Ingredient Management View (✅ COMPLETED - full CRUD with search/filter)
-- [x] Recipe Builder View (✅ COMPLETED - full CRUD with duplicate, nutrition calcs, gout safety)
-- [ ] Weekly Calendar View (placeholder created, needs implementation)
+- [x] Recipe Builder View (✅ COMPLETED - full CRUD with duplicate, nutrition calcs, gout safety, quick ingredient add)
+- [x] Weekly Calendar View (✅ COMPLETED - meal planning, daily totals, gout warnings, person-specific tracking)
 - [ ] Pantry View (placeholder created, needs implementation)
 - [ ] Meal Suggestions View (to be integrated into Pantry)
 - [ ] Shopping List View (placeholder created, needs implementation)
@@ -271,10 +304,11 @@ Building a multi-user family nutrition application with gout-friendly dietary tr
 6. ✅ Implement Ingredient Management View with full CRUD
 7. ✅ Implement Recipe Builder with ingredient selection and calculations
 8. ✅ Configure GitHub Pages deployment
-9. **CURRENT:** Build Weekly Calendar with meal planning for all family members
-10. Create Shopping List generator
-11. Build Analytics Dashboard with charts
-12. Implement AI Import Center with prompt templates
+9. ✅ Build Weekly Calendar with meal planning for all family members
+10. **CURRENT:** Create Shopping List generator from meal plans
+11. Build Pantry View with meal suggestions
+12. Build Analytics Dashboard with charts
+13. Implement AI Import Center with prompt templates
 
 ---
 
